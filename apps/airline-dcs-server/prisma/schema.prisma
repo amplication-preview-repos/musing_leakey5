@@ -1,0 +1,55 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Flight {
+  arrivalTime   DateTime?
+  createdAt     DateTime    @default(now())
+  departureTime DateTime?
+  destination   String?
+  flightNumber  String?
+  id            String      @id @default(cuid())
+  origin        String?
+  passengers    Passenger[]
+  stops         Stop[]
+  updatedAt     DateTime    @updatedAt
+}
+
+model Passenger {
+  createdAt DateTime @default(now())
+  email     String?
+  firstName String?
+  flight    Flight?  @relation(fields: [flightId], references: [id])
+  flightId  String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  updatedAt DateTime @updatedAt
+}
+
+model User {
+  createdAt DateTime @default(now())
+  email     String?  @unique
+  firstName String?
+  id        String   @id @default(cuid())
+  lastName  String?
+  password  String
+  roles     Json
+  updatedAt DateTime @updatedAt
+  username  String   @unique
+}
+
+model Stop {
+  airport       String?
+  arrivalTime   DateTime?
+  createdAt     DateTime  @default(now())
+  departureTime DateTime?
+  flight        Flight?   @relation(fields: [flightId], references: [id])
+  flightId      String?
+  id            String    @id @default(cuid())
+  updatedAt     DateTime  @updatedAt
+}
